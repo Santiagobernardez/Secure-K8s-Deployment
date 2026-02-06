@@ -1,0 +1,33 @@
+# deployment.yaml for Secure K8s Deployment with Shell Script - By Santiago Bernardez
+# Deploys a secure pod with resource limits and non-root security.
+# Trade-off: Minimal resources for security (low CPU/memory to reduce attack surface) vs higher for performance (easier but riskier).
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-shell-deployment
+spec:
+  replicas: 1  # One pod for simplicity
+  selector:
+    matchLabels:
+      app: secure-shell
+  template:
+    metadata:
+      labels:
+        app: secure-shell
+    spec:
+      containers:
+      - name: secure-shell-container
+        image: secure-shell-container  # Your local Docker image
+        command: ["/app/quick_file_check.sh", "/some/file.txt"]  # Run your script with argument
+        securityContext:
+          runAsNonRoot: true  # Non-root for security
+          allowPrivilegeEscalation: false  # Prevent privilege escalation
+        resources:
+          limits:
+            memory: "128Mi"  # Limit resources to reduce risks
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+      # Lessons: Used Minikube for local test. Trade-off: Simple deployment vs full cluster (easier but less scalable).
