@@ -18,8 +18,9 @@ spec:
     spec:
       containers:
       - name: secure-shell-container
-        image: secure-shell-container  # Your local Docker image
-        command: ["/app/quick_file_check.sh", "/some/file.txt"]  # Run your script with argument
+        image: secure-shell-container  # My local docker image
+        imagePullPolicy: Never
+        command: ["/bin/sh", "-c", "sleep infinity"]  # Run a script to test
         securityContext:
           runAsNonRoot: true  # Non-root for security
           allowPrivilegeEscalation: false  # Prevent privilege escalation
